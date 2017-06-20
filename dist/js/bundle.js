@@ -26439,7 +26439,6 @@ class D3Table {
     render(elementId) {
         let container = d3.select(elementId);
         console.log("render", elementId, container);
-        container.empty();
         let table = container.append("table");
         let thead = table.append('thead');
         let tbody = table.append('tbody');
@@ -26476,12 +26475,20 @@ document.getElementById("btn-submit").onclick = () => {
     //add record
     db.insert(new_table, () => {
         console.log("inserted");
+        db.count({}, (err, count) => {
+            d3.select("#db-status").text("db contains " + count + " entries");
+        });
     });
+};
+document.getElementById("btn-load").onclick = () => {
     //display the record as a table
     db.find({}, (err, docs) => {
         console.log("docs", docs);
-        let newTable = new D3Table(docs[0]);
-        newTable.render("#main-col");
+        d3.select("#main-col").empty();
+        for (var doc of docs) {
+            let newTable = new D3Table(doc);
+            newTable.render("#main-col");
+        }
     });
 };
 
