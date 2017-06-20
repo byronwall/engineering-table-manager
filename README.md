@@ -10,4 +10,4 @@ If you want to use Gulp to monitor for changes and recompile the Typescript use 
 
 ## usage
 
-The end goal of this program is to use it to store arbitrary tables of data (in particular engineering information) and then link them together.  For now, it simply stores tables that you give it and them prompty forgets them on a restart.
+The end goal of this program is to use it to store arbitrary tables of data (in particular engineering information) and then link them together.  For now, it simply stores tables that you give it and them promptly forgets them on a restart.
