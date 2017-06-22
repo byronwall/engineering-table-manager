@@ -12,7 +12,7 @@
         <div class="row">
             <div class="col-12">
                 <h1>table manager</h1>
-                <h2>use the data below and hit create to get a table.  make some changes to get a new table</h2>
+                <h2>use the data below and hit create to get a table. make some changes to get a new table</h2>
 
                 <form>
                     <textarea id="table-in">Temperature	150	300	400	600	900	1500	2500
@@ -45,7 +45,11 @@
             </div>
         </div>
 
-        <script src="js/bundle.js"></script>
+        <script type="text/javascript">
+            //this is required to deal with TypeScript error
+            var exports = {};
+        </script>
+        <script type="text/javascript" src="app.js"></script>
 </body>
 
 </html>
