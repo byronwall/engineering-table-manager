@@ -2,16 +2,16 @@
   "name": "table-mgr",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "nodemon --ext 'ts,html' --watch 'src' --exec \"gulp\""
+    "start": "electron ./app"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "connect": "^3.6.2",
     "d3": "^4.9.1",
+    "electron": "^1.6.11",
     "nedb": "^1.8.0",
     "nodemon": "^1.11.0",
     "serve-static": "^1.12.3"
@@ -19,17 +19,6 @@
   "devDependencies": {
     "@types/d3": "^4.9.0",
     "@types/nedb": "^1.8.3",
-    "browserify": "^14.1.0",
-    "gulp": "^3.9.1",
-    "gulp-plumber": "^1.1.0",
-    "gulp-sourcemaps": "^2.4.1",
-    "gulp-typescript": "^3.1.5",
-    "gulp-util": "^3.0.8",
-    "gulp-watch": "^4.3.11",
-    "tsify": "^3.0.1",
-    "typescript": "^2.3.4",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0",
-    "watchify": "^3.9.0"
+    "typescript": "^2.3.4"
   }
 }
