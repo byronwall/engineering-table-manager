@@ -44,4 +44,64 @@ function count_records() {
     });
 }
 
+function render_list() {
+    let element = d3.select("#db-list");
+
+    //clear the list
+    element.html(null);
+
+    //get the list of titles
+    let ul = element.append("ul").classed("list-group", true);
+
+    //put each title into a li
+
+    db.find<DataTable>({}, (err, docs) => {
+        console.log("docs", docs);
+
+        ul.selectAll("li")
+            .data(docs).enter()
+            .append("li")
+            .classed("list-group-item", true)
+            .text((d) => { return d.title })
+
+            .on("click", (d) => {
+                console.log("li clicked", d);
+
+                //set the active doc
+                active_table = d;
+
+                //render this table
+                let newTable = new D3Table(d);
+                d3.select("#main-col").html(null);
+                newTable.render("#main-col");
+
+                //refresh the editor
+                refresh_editor();
+            });
+    })
+}
+
+function refresh_editor() {
+    //set the textbox value equal to the title
+    let editor = d3.select("#edit-title");
+    console.log("text", editor.property("value"))
+}
+
+d3.select("#edit-save").on("click", () => {
+    if (active_table !== null) {
+        console.log("active table", active_table);
+
+        let editor = d3.select("#edit-title");
+        active_table.title = editor.property("value");
+
+        db.update({ _id: active_table._id }, active_table, {}, (err, num) => {
+            console.log("update", err, num);
+            render_list();
+        })
+    }
+})
+
+let active_table: DataTable;
+
 count_records();
+render_list();

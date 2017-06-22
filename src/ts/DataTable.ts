@@ -1,7 +1,9 @@
 export class DataTable {
+    _id: any;
     data: {}[] = [];
     columns: string[] = [];
     row_headers: string[] = [];
+    title: string;
 
     static FromString(input: string): DataTable {
         console.log("DataTable, create new...", input);
