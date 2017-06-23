@@ -4,6 +4,15 @@ import * as d3 from "d3";
 import { DataTable } from "./DataTable";
 import { D3Table } from "./D3Table";
 
+import * as electron from "electron";
+import { remote, ipcRenderer } from "electron";
+
+ipcRenderer.on('test', (event, arg) => {
+    //this will respond to the global keyboard shortcut... need to focus on the search
+    console.log("args from IPC", arg); // prints "pong"
+});
+
+//TODO: generalize this code
 let db = new nedb({ filename: "./_data/test.db", autoload: true });
 
 let input = document.getElementById("table-in") as HTMLTextAreaElement;
@@ -55,29 +64,48 @@ function render_list() {
 
     //put each title into a li
 
-    db.find<DataTable>({}, (err, docs) => {
+    db.find({}, (err, _docs) => {
+
+        let docs = DataTable.transformJsonArrToType(_docs);
+
         console.log("docs", docs);
 
-        ul.selectAll("li")
+        let li = ul.selectAll("li")
             .data(docs).enter()
             .append("li")
             .classed("list-group-item", true)
-            .text((d) => { return d.title })
+            .text((d) => { return d.title });
 
-            .on("click", (d) => {
-                console.log("li clicked", d);
+        let delete_label = li.append("span")
+            .text("delete")
+            .classed("label", true)
+            .classed("label-danger", true);
 
-                //set the active doc
-                active_table = d;
+        li.on("click", (d) => {
+            console.log("li clicked", d);
 
-                //render this table
-                let newTable = new D3Table(d);
-                d3.select("#main-col").html(null);
-                newTable.render("#main-col");
+            //set the active doc
+            active_table = d;
 
-                //refresh the editor
-                refresh_editor();
+            //render this table
+            let newTable = new D3Table(d);
+            d3.select("#main-col").html(null);
+            newTable.render("#main-col");
+
+            //refresh the editor
+            refresh_editor();
+        });
+
+        delete_label.on("click", (d) => {
+            console.log("attempt delete", d, d.dbId);
+            db.remove(d.dbId, (err, num) => {
+                console.log("deleted?", err, num)
+
+                render_list();
             });
+
+            d3.event.stopPropagation();
+        })
     })
 }
 

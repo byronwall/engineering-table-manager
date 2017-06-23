@@ -40,4 +40,30 @@ export class DataTable {
 
         return newTable;
     }
+
+    get dbId(): any {
+        let output = {};
+        output["_id"] = this._id;
+        console.log(output);
+        return output;
+    }
+
+    static transformJsonToType(json: {}): DataTable {
+        let newObj = new DataTable();
+
+        for (var prop in json) {
+            newObj[prop] = json[prop];
+        }
+
+        return newObj;
+    }
+
+    static transformJsonArrToType(json_arr: {}[]): DataTable[] {
+        let output: DataTable[] = [];
+
+        for (var json of json_arr) {
+            output.push(DataTable.transformJsonToType(json));
+        }
+        return output;
+    }
 }

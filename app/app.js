@@ -4,6 +4,12 @@ const nedb = require("nedb");
 const d3 = require("d3");
 const DataTable_1 = require("./DataTable");
 const D3Table_1 = require("./D3Table");
+const electron_1 = require("electron");
+electron_1.ipcRenderer.on('test', (event, arg) => {
+    //this will respond to the global keyboard shortcut... need to focus on the search
+    console.log("args from IPC", arg); // prints "pong"
+});
+//TODO: generalize this code
 let db = new nedb({ filename: "./_data/test.db", autoload: true });
 let input = document.getElementById("table-in");
 document.getElementById("btn-submit").onclick = () => {
@@ -40,14 +46,19 @@ function render_list() {
     //get the list of titles
     let ul = element.append("ul").classed("list-group", true);
     //put each title into a li
-    db.find({}, (err, docs) => {
+    db.find({}, (err, _docs) => {
+        let docs = DataTable_1.DataTable.transformJsonArrToType(_docs);
         console.log("docs", docs);
-        ul.selectAll("li")
+        let li = ul.selectAll("li")
             .data(docs).enter()
             .append("li")
             .classed("list-group-item", true)
-            .text((d) => { return d.title; })
-            .on("click", (d) => {
+            .text((d) => { return d.title; });
+        let delete_label = li.append("span")
+            .text("delete")
+            .classed("label", true)
+            .classed("label-danger", true);
+        li.on("click", (d) => {
             console.log("li clicked", d);
             //set the active doc
             active_table = d;
@@ -57,6 +68,14 @@ function render_list() {
             newTable.render("#main-col");
             //refresh the editor
             refresh_editor();
+        });
+        delete_label.on("click", (d) => {
+            console.log("attempt delete", d, d.dbId);
+            db.remove(d.dbId, (err, num) => {
+                console.log("deleted?", err, num);
+                render_list();
+            });
+            d3.event.stopPropagation();
         });
     });
 }
