@@ -13,12 +13,14 @@
     "connect": "^3.6.2",
     "d3": "^4.9.1",
     "electron": "^1.6.11",
+    "jquery": "^3.2.1",
     "nedb": "^1.8.0",
     "nodemon": "^1.11.0",
     "serve-static": "^1.12.3"
   },
   "devDependencies": {
     "@types/d3": "^4.9.0",
+    "@types/jquery": "^3.2.4",
     "@types/nedb": "^1.8.3",
     "typescript": "^2.3.4"
   }

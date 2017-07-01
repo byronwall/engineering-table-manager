@@ -4,7 +4,6 @@ import * as d3 from "d3";
 import { DataTable } from "./DataTable";
 import { D3Table } from "./D3Table";
 
-import * as electron from "electron";
 import { remote, ipcRenderer } from "electron";
 
 ipcRenderer.on('test', (event, arg) => {
@@ -129,7 +128,38 @@ d3.select("#edit-save").on("click", () => {
     }
 })
 
+//TODO: this active_table really needs to be a part of a larger Type
 let active_table: DataTable;
 
 count_records();
 render_list();
+
+//TODO: move this scraper code to its own Webview type class
+
+import * as $ from "jquery";
+
+let webview = document.getElementById("scraper");
+
+interface WebViewEvent extends Event {
+    args: any[];
+}
+
+webview.addEventListener("dom-ready", function () {
+    //this will open the dev tools for the webview if needed
+    //webview.openDevTools();
+});
+webview.addEventListener("ipc-message", function (e: WebViewEvent) {
+
+    //TODO: right now the processing takes place in the WebView to determine visibility.
+
+    let tableHtml = e.args[0];
+    let newHtml = e.args[1];
+
+    console.log("newHTML", newHtml);
+    $("#table-in").val(newHtml)
+
+    //import is ready to take place... create a new DataTable
+
+    //TODO: instead of moving text to the TEXTAREA, go ahead and create the DataTable
+
+});

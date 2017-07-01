@@ -1,3 +1,5 @@
+import * as $ from "jquery";
+
 export class DataTable {
     _id: any;
     data: {}[] = [];
@@ -13,29 +15,90 @@ export class DataTable {
 
         let isFirstLine = true;
 
-        //assume that the string contains headers, then data, tab separated
-        let lines = input.split("\n");
-        for (var line of lines) {
-            var cols = line.split("\t");
+        //TODO: add a guessing step here to see if CSV or <table>
 
-            let dataObj = {};
-            let colIndex = 0;
+        if (input.substring(0, 7) === "<table>") {
+            //this assumes a <table> input
 
-            for (var col of cols) {
-                if (isFirstLine) {
-                    newTable.columns.push(col);
-                } else {
-                    dataObj[newTable.columns[colIndex]] = col;
+            //need to parse the table using jquery for now
 
-                    colIndex++;
+            let table = $(input);
+
+            let thead = table.find("thead");
+            console.log("thead", thead);
+
+            if (thead.length > 0) {
+                //get the headers
+                let thtr = thead.find("tr");
+                if (thtr.length > 0) {
+                    for (var th of thtr.children()) {
+                        console.log("th", th);
+                        //push the column header into the data
+                        newTable.columns.push($(th).text());
+                    }
                 }
             }
 
-            if (!isFirstLine) {
-                newTable.data.push(dataObj);
+            let tbody = table.find("tbody");
+            console.log("tbody", tbody)
+
+            if (tbody.length > 0) {
+                let trtr = tbody.find("tr");
+                if (trtr.length > 0) {
+
+                    console.log("trtr", trtr);
+
+                    for (var tr of trtr) {
+
+                        let dataObj = {};
+                        let colIndex = 0;
+
+                        console.log("tr", tr);
+
+                        for (var td of $(tr).children()) {
+                            console.log("td", colIndex, td);
+
+                            dataObj[newTable.columns[colIndex]] = $(td).text();
+                            colIndex++;
+                        }
+
+                        newTable.data.push(dataObj);
+                    }
+                }
             }
 
-            isFirstLine = false;
+            //read the thead block to get the headers
+
+            //read the tbody to get the data
+
+        } else {
+
+            //this assumes a CSV file
+
+            //assume that the string contains headers, then data, tab separated
+            let lines = input.split("\n");
+            for (var line of lines) {
+                var cols = line.split("\t");
+
+                let dataObj = {};
+                let colIndex = 0;
+
+                for (var col of cols) {
+                    if (isFirstLine) {
+                        newTable.columns.push(col);
+                    } else {
+                        dataObj[newTable.columns[colIndex]] = col;
+
+                        colIndex++;
+                    }
+                }
+
+                if (!isFirstLine) {
+                    newTable.data.push(dataObj);
+                }
+
+                isFirstLine = false;
+            }
         }
 
         return newTable;

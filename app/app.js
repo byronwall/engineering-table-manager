@@ -95,7 +95,24 @@ d3.select("#edit-save").on("click", () => {
         });
     }
 });
+//TODO: this active_table really needs to be a part of a larger Type
 let active_table;
 count_records();
 render_list();
+//TODO: move this scraper code to its own Webview type class
+const $ = require("jquery");
+let webview = document.getElementById("scraper");
+webview.addEventListener("dom-ready", function () {
+    //this will open the dev tools for the webview if needed
+    //webview.openDevTools();
+});
+webview.addEventListener("ipc-message", function (e) {
+    //TODO: right now the processing takes place in the WebView to determine visibility.
+    let tableHtml = e.args[0];
+    let newHtml = e.args[1];
+    console.log("newHTML", newHtml);
+    $("#table-in").val(newHtml);
+    //import is ready to take place... create a new DataTable
+    //TODO: instead of moving text to the TEXTAREA, go ahead and create the DataTable
+});
 //# sourceMappingURL=app.js.map
